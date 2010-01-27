@@ -15,7 +15,7 @@ class Postmark {
 
 	//private
 	var $CI;
-    var $api_key = '';
+        var $api_key = '';
     	
 	var $from_name;
 	var $from_address;
@@ -32,16 +32,16 @@ class Postmark {
 	 * @access	public
 	 * @param	array	initialization parameters
 	 */	
-    function Postmark($params = array())
-	{
-		$this->CI =& get_instance();
+         function Postmark($params = array())
+         {
+             $this->CI =& get_instance();
         
-        if (count($params) > 0)
-        {
-            $this->initialize($params);
-		}
+             if (count($params) > 0)
+             {
+                 $this->initialize($params);
+             }
 		
-		log_message('debug', 'Postmark Class Initialized');
+             log_message('debug', 'Postmark Class Initialized');
 
 	}
 
@@ -54,20 +54,20 @@ class Postmark {
 	 * @param	array	initialization parameters
 	 * @return	void
 	 */	
-    function initialize($params)
-	{
-        $this->clear();
-		if (count($params) > 0)
-        {
-            foreach ($params as $key => $value)
-            {
-                if (isset($this->$key))
-                {
-                    $this->$key = $value;
-                }
-            }
-        }
-	}
+         function initialize($params)
+         {
+             $this->clear();
+             if (count($params) > 0)
+             {
+                 foreach ($params as $key => $value)
+                 {
+                     if (isset($this->$key))
+                     {
+                         $this->$key = $value;
+                     }
+                 }
+             }
+         }
 
 	// --------------------------------------------------------------------
 
@@ -77,15 +77,15 @@ class Postmark {
 	 * @access	public
 	 * @return	void
 	 */	
-    function clear() {
-        $this->from_name = '';
-    	$this->from_address = '';
-    	$this->_toName = '';
-    	$this->_toAddress = '';
-    	$this->_subject = '';
-    	$this->_messagePlain = '';
-    	$this->_messageHtml = '';	
-	}
+         function clear() {
+             $this->from_name = '';
+    	     $this->from_address = '';
+    	     $this->_toName = '';
+    	     $this->_toAddress = '';
+    	     $this->_subject = '';
+    	     $this->_messagePlain = '';
+    	     $this->_messageHtml = '';	
+        }
 	
 	// --------------------------------------------------------------------
 
