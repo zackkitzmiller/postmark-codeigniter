@@ -2,37 +2,30 @@
 
 /*
 |--------------------------------------------------------------------------
-| POST MARK API KEY
+| POSTMARK API KEY
 |--------------------------------------------------------------------------
 |
-| Typically this will be your index.php file, unless you've renamed it to
-| something else. If you are using mod_rewrite to remove the page set this
-| variable so that it is blank.
+| Enter your Postmark API key here. 
+| 
+| This key is available by visiting your Postmark Rack, clicking 'Details'
+| next to the desiered server, then clicking 'Settings & API Credentials'
 |
 */
 $config['api_key'] = '';
 
 /*
 |--------------------------------------------------------------------------
-| Index File
+| FROM NAME & FROM ADDRESS
 |--------------------------------------------------------------------------
 |
-| Typically this will be your index.php file, unless you've renamed it to
-| something else. If you are using mod_rewrite to remove the page set this
-| variable so that it is blank.
+| These are optional settings
+| 
+| If you're going to be using the same Sender Signature for all emails, it
+| might be easier to assign it here, than doing so with each individual
+| email. 
 |
+| Configure your Sender Signatures at http://postmarkapp.com/signatures
 */
 $config['from_name'] = '';
-
-/*
-|--------------------------------------------------------------------------
-| Index File
-|--------------------------------------------------------------------------
-|
-| Typically this will be your index.php file, unless you've renamed it to
-| something else. If you are using mod_rewrite to remove the page set this
-| variable so that it is blank.
-|
-*/
 $config['from_address'] = '';
 
