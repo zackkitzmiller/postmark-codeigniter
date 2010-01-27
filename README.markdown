@@ -36,8 +36,8 @@ Sending
 
     $this->postmark->to('to@example.com', 'To Name);
     $this->postmark->subject('Example subject');
-    $this->postmark->messagePlain('Testing...');
-    $this->postmark->messageHtml('<html><strong>Testing...</strong></html>');
+    $this->postmark->message_plain('Testing...');
+    $this->postmark->message_html('<html><strong>Testing...</strong></html>');
     $this->postmark->send();
 	
 If using this in a loop, calling $this->postmark->to('to'); again will *replace* the original recipient, and calling $this->postmark->clear(); will set all fields to null. 
