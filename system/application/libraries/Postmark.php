@@ -1,123 +1,178 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-/*
-	CodeIgniter Postmark Library
-	
-	Postmark
-	http://postmarkapp.com
-	
-	Based on Markus Hedlund's Postmark class for PHP
-	http://github.com/Znarkus/postmark-php/blob/master/Postmark.php
-	
-	Requires PHP 5.2.0 or higher.
-	
-	Usage guide:
-	
-	$this->load->library('postmark');
-	$this->postmark->from('from@example.com', 'From Name');
-	$this->postmark->to('to@example.com', 'To Name);
-	$this->postmark->subject('Example subject');
-	$this->postmark->messagePlain('Testing...');
-	$this->postmark->messageHtml('<html><strong>Testing...</strong></html>');
-	$this->postmark->send();
-	
-	OR
-	
-	$this->load->library('postmark');
-	$this->postmark->send('from@example.com', 'From Name', 'to@example.com', 'To Name', 'Example Subject', 'Testing...', '<html><strong>Testing...</strong></html>');
-	
-	If you need to send the same e-mail to several recipients you can just change the to fields
-	with to() and then use send() to send the e-mail. This works for any field.
-
-	If you need to reset all the fields to null use new_email().
+/**
+ * Postmark Email Library
+ *
+ * Permits email to be sent using Postmarkapp.com's Servers
+ *
+ * @category	Libraries
+ * @author		Based on work by János Rusiczki & Markus Hedlund’s.
+ * @modified    Heavily Modified by Zack Kitzmiller
+ * @link		http://www.github.com/zackkitzmiller/postmark-codeigniter
 */
 
-class Postmark extends Controller {
+class Postmark {
 
 	//private
-	var $_rConfig;
-	var $_ci;
+	var $CI;
+    var $api_key = '';
+    	
+	var $from_name;
+	var $from_address;
 	
-	var $_fromName;
-	var $_fromAddress;
 	var $_toName;
 	var $_toAddress;
 	var $_subject;
 	var $_messagePlain;
 	var $_messageHtml;
 
-	
-	function __construct()
-	{
-		log_message('debug', 'Postmark class Initialized');
-		$this->_ci =& get_instance();
-		$this->_ci->config->load('postmark');
-		$this->_rConfig = $this->_ci->config->item('postmark');
-		
-		$this->to(null, null);
-		$this->from(null, null);
-		$this->messagePlain(null);
-		$this->messageHtml(null);
-	}
-	
-	function new_email()
-	{
-		$this->to(null, null);
-		$this->from(null, null);
-		$this->messagePlain(null);
-		$this->messageHtml(null);
-	}
-	
 	/**
-	* Specify sender. Overwrites default From.
-	*/
+	 * Constructor
+	 *
+	 * @access	public
+	 * @param	array	initialization parameters
+	 */	
+    function Postmark($params = array())
+	{
+		$this->CI =& get_instance();
+        
+        if (count($params) > 0)
+        {
+            $this->initialize($params);
+		}
+		
+		log_message('debug', 'Postmark Class Initialized');
+
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Initialize Preferences
+	 *
+	 * @access	public
+	 * @param	array	initialization parameters
+	 * @return	void
+	 */	
+    function initialize($params)
+	{
+        $this->clear();
+		if (count($params) > 0)
+        {
+            foreach ($params as $key => $value)
+            {
+                if (isset($this->$key))
+                {
+                    $this->$key = $value;
+                }
+            }
+        }
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Clear the Email Data
+	 *
+	 * @access	public
+	 * @return	void
+	 */	
+    function clear() {
+        $this->from_name = '';
+    	$this->from_address = '';
+    	$this->_toName = '';
+    	$this->_toAddress = '';
+    	$this->_subject = '';
+    	$this->_messagePlain = '';
+    	$this->_messageHtml = '';	
+	}
+	
+	// --------------------------------------------------------------------
+
+	/**
+	 * Set Email FROM address
+	 *
+	 * This could also be set in the config file
+	 *
+	 * TODO:
+	 * Validate Email Addresses ala CodeIgniter's Email Class
+	 *
+	 * @access	public
+	 * @return	void
+	 */	
 	function from($address, $name = null)
 	{
-		$this->_fromAddress = $address;
-		$this->_fromName = $name;
+		$this->from_address = $address;
+		$this->from_name = $name;
 	}
 	
+	// --------------------------------------------------------------------
+
 	/**
-	* Specify receiver
-	*/
+	 * Set Email TO address
+	 *
+	 * TODO:
+	 * Validate Email Addresses ala CodeIgniter's Email Class
+	 *
+	 * @access	public
+	 * @return	void
+	 */	
 	function to($address, $name = null)
 	{
 		$this->_toAddress = $address;
 		$this->_toName = $name;
 	}
 	
+	// --------------------------------------------------------------------
+
 	/**
-	* Specify subject
-	*/
+	 * Set Email Subject
+	 *
+	 * @access	public
+	 * @return	void
+	 */	
 	function subject($subject)
 	{
 		$this->_subject = $subject;
 	}
 	
+	// --------------------------------------------------------------------
+
 	/**
-	* Add plaintext message. Can be used in conjunction with messageHtml()
-	*/
+	 * Set Email Message in Plain Text
+	 *
+	 * @access	public
+	 * @return	void
+	 */	
 	function messagePlain($message)
 	{
 		$this->_messagePlain = $message;
 	}
-	
+
+	// --------------------------------------------------------------------
+
 	/**
-	* Add HTML message. Can be used in conjunction with messagePlain()
-	*/
+	 * Set Email Message in HTML
+	 *
+	 * @access	public
+	 * @return	void
+	 */	
 	function messageHtml($message)
 	{
 		$this->_messageHtml = $message;
 	}
 
-	
+	// --------------------------------------------------------------------
+    /**
+    * Private Function to prepare and send email
+    */
 	function _prepareData()
 	{
 		$data = array(
 			'Subject' => $this->_subject
 		);
 		
-		$data['From'] = is_null($this->_fromName) ? $this->_fromAddress : "{$this->_fromName} <{$this->_fromAddress}>";
+		$data['From'] = is_null($this->from_name) ? $this->from_address : "{$this->from_name} <{$this->from_address}>";
 		$data['To'] = is_null($this->_toName) ? $this->_toAddress : "{$this->_toName} <{$this->_toAddress}>";
 		
 		if (!is_null($this->_messageHtml)) {
@@ -140,11 +195,11 @@ class Postmark extends Controller {
 		if (!is_null($message_plain)) $this->messagePlain($message_plain);
 		if (!is_null($message_html)) $this->messageHtml($message_html);
 	
-		if (is_null($this->_rConfig['api_key'])) {
+		if (is_null($this->api_key)) {
 			show_error("Postmark API key is not set!");
 		}
 		
-		if (is_null($this->_fromAddress)) {
+		if (is_null($this->from_address)) {
 			show_error("From address is not set!");
 		}
 		
@@ -160,23 +215,23 @@ class Postmark extends Controller {
 			show_error("Please either set plain message, HTML message or both!");
 		}
 	
-		$data = $this->_prepareData();
+		$encoded_data = json_encode($this->_prepareData());
 		
 		$headers = array(
 			'Accept: application/json',
 			'Content-Type: application/json',
-			'X-Postmark-Server-Token: ' . $this->_rConfig['api_key']
+			'X-Postmark-Server-Token: ' . $this->api_key
 		);
 		
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, 'http://api.postmarkapp.com/email');
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
-		curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+		curl_setopt($ch, CURLOPT_POSTFIELDS, $encoded_data);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 		
 		$return = curl_exec($ch);
-		log_message('debug', 'JSON: ' . json_encode($data) . "\nHeaders: \n\t" . implode("\n\t", $headers) . "\nReturn:\n$return");
+		log_message('debug', 'JSON: ' . $encoded_data . "\nHeaders: \n\t" . implode("\n\t", $headers) . "\nReturn:\n$return");
 		
 		if (curl_error($ch) != '') {
 			show_error(curl_error($ch));
