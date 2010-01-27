@@ -6,44 +6,44 @@
  * Permits email to be sent using Postmarkapp.com's Servers
  *
  * @category	Libraries
- * @author		Based on work by János Rusiczki & Markus Hedlund’s.
+ * @author      Based on work by János Rusiczki & Markus Hedlund’s.
  * @modified    Heavily Modified by Zack Kitzmiller
- * @link		http://www.github.com/zackkitzmiller/postmark-codeigniter
+ * @link        http://www.github.com/zackkitzmiller/postmark-codeigniter
 */
 
 class Postmark {
 
-	//private
-	var $CI;
+    //private
+    var $CI;
     var $api_key = '';
-    	
-	var $from_name;
-	var $from_address;
-	
-	var $_toName;
-	var $_toAddress;
-	var $_subject;
-	var $_messagePlain;
-	var $_messageHtml;
+    
+    var $from_name;
+    var $from_address;
+    
+    var $_to_name;
+    var $_to_address;
+    var $_subject;
+    var $_message_plain;
+    var $_message_html;
 
-	/**
-	 * Constructor
-	 *
-	 * @access	public
-	 * @param	array	initialization parameters
-	 */	
+    /**
+     * Constructor
+     *
+     * @access	public
+     * @param	array	initialization parameters
+     */	
     function Postmark($params = array())
-	{
-		$this->CI =& get_instance();
+    {
+        $this->CI =& get_instance();
         
         if (count($params) > 0)
         {
             $this->initialize($params);
-		}
-		
-		log_message('debug', 'Postmark Class Initialized');
-
-	}
+        }
+    	
+        log_message('debug', 'Postmark Class Initialized');
+    
+    }
 
 	// --------------------------------------------------------------------
 
@@ -80,11 +80,12 @@ class Postmark {
     function clear() {
         $this->from_name = '';
     	$this->from_address = '';
-    	$this->_toName = '';
-    	$this->_toAddress = '';
+    	
+    	$this->_to_name = '';
+    	$this->_to_address = '';
     	$this->_subject = '';
-    	$this->_messagePlain = '';
-    	$this->_messageHtml = '';	
+    	$this->_message_plain = '';
+    	$this->_message_html = '';	
 	}
 	
 	// --------------------------------------------------------------------
@@ -119,8 +120,8 @@ class Postmark {
 	 */	
 	function to($address, $name = null)
 	{
-		$this->_toAddress = $address;
-		$this->_toName = $name;
+		$this->_to_address = $address;
+		$this->_to_name = $name;
 	}
 	
 	// --------------------------------------------------------------------
@@ -144,9 +145,9 @@ class Postmark {
 	 * @access	public
 	 * @return	void
 	 */	
-	function messagePlain($message)
+	function message_plain($message)
 	{
-		$this->_messagePlain = $message;
+		$this->_message_plain = $message;
 	}
 
 	// --------------------------------------------------------------------
@@ -157,30 +158,30 @@ class Postmark {
 	 * @access	public
 	 * @return	void
 	 */	
-	function messageHtml($message)
+	function message_html($message)
 	{
-		$this->_messageHtml = $message;
+		$this->_message_html = $message;
 	}
 
 	// --------------------------------------------------------------------
     /**
     * Private Function to prepare and send email
     */
-	function _prepareData()
+	function _prepare_data()
 	{
 		$data = array(
 			'Subject' => $this->_subject
 		);
 		
 		$data['From'] = is_null($this->from_name) ? $this->from_address : "{$this->from_name} <{$this->from_address}>";
-		$data['To'] = is_null($this->_toName) ? $this->_toAddress : "{$this->_toName} <{$this->_toAddress}>";
+		$data['To'] = is_null($this->_to_name) ? $this->_to_address : "{$this->_to_name} <{$this->_to_address}>";
 		
-		if (!is_null($this->_messageHtml)) {
-			$data['HtmlBody'] = $this->_messageHtml;
+		if (!is_null($this->_message_html)) {
+			$data['HtmlBody'] = $this->_message_html;
 		}
 		
-		if (!is_null($this->_messagePlain)) {
-			$data['TextBody'] = $this->_messagePlain;
+		if (!is_null($this->_message_plain)) {
+			$data['TextBody'] = $this->_message_plain;
 		}
 		
 		return $data;
@@ -192,8 +193,8 @@ class Postmark {
 		if (!is_null($from_address)) $this->from($from_address, $from_name);
 		if (!is_null($to_address)) $this->to($to_address, $to_name);
 		if (!is_null($subject)) $this->subject($subject);
-		if (!is_null($message_plain)) $this->messagePlain($message_plain);
-		if (!is_null($message_html)) $this->messageHtml($message_html);
+		if (!is_null($message_plain)) $this->message_plain($message_plain);
+		if (!is_null($message_html)) $this->message_html($message_html);
 	
 		if (is_null($this->api_key)) {
 			show_error("Postmark API key is not set!");
@@ -203,7 +204,7 @@ class Postmark {
 			show_error("From address is not set!");
 		}
 		
-		if (is_null($this->_toAddress)) {
+		if (is_null($this->_to_address)) {
 			show_error("To address is not set!");
 		}
 		
@@ -211,11 +212,11 @@ class Postmark {
 			show_error("Subject is not set!");
 		}
 		
-		if (is_null($this->_messagePlain) && is_null($this->_messageHtml)) {
+		if (is_null($this->_message_plain) && is_null($this->_message_html)) {
 			show_error("Please either set plain message, HTML message or both!");
 		}
 	
-		$encoded_data = json_encode($this->_prepareData());
+		$encoded_data = json_encode($this->_prepare_data());
 		
 		$headers = array(
 			'Accept: application/json',
