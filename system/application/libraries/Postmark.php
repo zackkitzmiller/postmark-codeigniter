@@ -32,9 +32,8 @@
 	If you need to reset all the fields to null use new_email().
 */
 
-class Postmark extends Controller {
+class Postmark {
 
-	//private
 	var $_rConfig;
 	var $_ci;
 	
