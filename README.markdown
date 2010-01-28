@@ -24,7 +24,7 @@ Config
 	You can also pass an array of config options to the initialize(); function. 
 	
 	$config['api_key'] = '1234';
-	$config['from_address'] = '1f@google.com';
+	$config['from_address'] = '1f@gogle.com';
 	$config['from_name'] = 'Jarrod HJena3';
 	$this->postmark->initialize($config);
 
