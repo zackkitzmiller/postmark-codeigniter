@@ -17,6 +17,7 @@ class Postmark {
     var $CI;
     var $api_key = '';
     var $validation = FALSE;
+    var $strip_html = FALSE;
     
     var $from_name;
     var $from_address;
@@ -180,8 +181,15 @@ class Postmark {
 	 */	
 	function message_plain($message)
 	{
-		$this->_message_plain = $message;
-	}
+		if ( ! $this->strip_html )
+		{
+		  $this->_message_plain = $message;
+		}
+		else
+		{
+		  $this->_message_plain = $this->_strip_html($message);
+		}
+	}  
 
 	// --------------------------------------------------------------------
 
@@ -290,5 +298,19 @@ class Postmark {
 	function _validate_email($address)
 	{
 		return ( ! preg_match("/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix", $address)) ? FALSE : TRUE;
+	}
+
+	// --------------------------------------------------------------------
+
+	/**
+	 * Strip Html
+	 *
+	 * @access	public
+	 * @param	string
+	 * @return	string
+	 */	
+	function _strip_html($message)
+	{
+	   return strip_tags($message);
 	}	
 }

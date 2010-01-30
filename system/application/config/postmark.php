@@ -22,7 +22,7 @@ $config['api_key'] = '';
 | 
 | If you're going to be using the same Sender Signature for all emails, it
 | might be easier to assign it here, than doing so with each individual
-| email. 
+| email. If you are not using this setting, comment it out.
 |
 | Configure your Sender Signatures at http://postmarkapp.com/signatures
 */
@@ -42,3 +42,17 @@ $config['from_address'] = '';
 | 
 */
 $config['validation'] = TRUE;
+
+/*
+|--------------------------------------------------------------------------
+| STRIP_HTML
+|--------------------------------------------------------------------------
+|
+| Setting strip_tags to TRUE will strip all HTML tags from _plain_message
+| using PHP's strip_tags() function. It should be noted that the output
+| will probably be far from what you would expect.
+|
+| Experimental Feature
+| 
+*/
+$config['strip_html'] = FALSE;
