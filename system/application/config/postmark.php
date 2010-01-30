@@ -29,3 +29,16 @@ $config['api_key'] = '';
 $config['from_name'] = '';
 $config['from_address'] = '';
 
+/*
+|--------------------------------------------------------------------------
+| VALIDATION
+|--------------------------------------------------------------------------
+|
+| Setting validation to TRUE will require that you pass Postmark valid
+| email addresses for sender and reciever. If these are not valid email
+| addresses, the request to send an email will not be sent to Postmark. 
+|
+| This is reccomended on high traffic servers
+| 
+*/
+$config['validation'] = TRUE;

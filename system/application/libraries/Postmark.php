@@ -16,6 +16,7 @@ class Postmark {
     //private
     var $CI;
     var $api_key = '';
+    var $validation = FALSE;
     
     var $from_name;
     var $from_address;
@@ -103,8 +104,24 @@ class Postmark {
 	 */	
 	function from($address, $name = null)
 	{
-		$this->from_address = $address;
-		$this->from_name = $name;
+		
+		if ( ! $this->validation == TRUE)
+		{
+            $this->from_address = $address;
+            $this->from_name = $name;
+		} 
+		else
+        {
+            if ($this->_validate_email($address))
+            {
+                $this->from_address = $address;
+                $this->from_name = $name;
+            }
+            else
+            {
+                show_error('You have entered an invalid sender address.');
+            }
+		}
 	}
 	
 	// --------------------------------------------------------------------
@@ -120,8 +137,24 @@ class Postmark {
 	 */	
 	function to($address, $name = null)
 	{
-		$this->_to_address = $address;
-		$this->_to_name = $name;
+	        
+		if ( ! $this->validation == TRUE)
+		{
+            $this->_to_address = $address;
+            $this->_to_name = $name;
+		} 
+		else
+        {
+            if ($this->_validate_email($address))
+            {
+                $this->_to_address = $address;
+                $this->_to_name = $name;
+            }
+            else
+            {
+                show_error('You have entered an invalid recipient address.');
+            }
+		}
 	}
 	
 	// --------------------------------------------------------------------
@@ -169,10 +202,9 @@ class Postmark {
     */
 	function _prepare_data()
 	{
-		$data = array(
-			'Subject' => $this->_subject
-		);
-		
+        $data = array();
+		$data['Subject'] = $this->_subject;
+        		
 		$data['From'] = is_null($this->from_name) ? $this->from_address : "{$this->from_name} <{$this->from_address}>";
 		$data['To'] = is_null($this->_to_name) ? $this->_to_address : "{$this->_to_name} <{$this->_to_address}>";
 		
@@ -187,7 +219,7 @@ class Postmark {
 		return $data;
 	}
 	
-	public function send($from_address = null, $from_name = null, $to_address = null, $to_name = null, $subject = null, $message_plain = null, $message_html = null)
+    function send($from_address = null, $from_name = null, $to_address = null, $to_name = null, $subject = null, $message_plain = null, $message_html = null)
 	{
 	
 		if (!is_null($from_address)) $this->from($from_address, $from_name);
@@ -245,4 +277,18 @@ class Postmark {
 			show_error('Error while mailing. Postmark returned HTTP code ' . $httpCode . ' with message "'.$message.'"');
 		}
 	}
+	
+	// --------------------------------------------------------------------
+
+	/**
+	 * Email Validation
+	 *
+	 * @access	public
+	 * @param	string
+	 * @return	bool
+	 */
+	function _validate_email($address)
+	{
+		return ( ! preg_match("/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix", $address)) ? FALSE : TRUE;
+	}	
 }
