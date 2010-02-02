@@ -311,6 +311,7 @@ class Postmark {
 	 */	
 	function _strip_html($message)
 	{
-	   return strip_tags($message);
+        $message =  preg_replace('/\<br(\s*)?\/?\>/i', "\n", $message);
+        return strip_tags($message);
 	}	
 }
