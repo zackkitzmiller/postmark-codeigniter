@@ -14,23 +14,23 @@ Copy system/application/libraries/Postmark.php to your application/libraries fol
 Usage
 ------
 
-Config
+### Config
 	
-	There are six options that you can set in the config file (application/config/postmark.php)
-	Only api-key is required, which you get from your server instance on postmarkapp.com
-	
-	The other five are optional. You can set a default 'From Name' and 'From Address'. This are setup in your postmarkapp.com sender signatures.
-	
-	Setting 'validation' to TRUE will require that the to and from email addresses are, indeed, valid emails. A request will not be sent to 
-    postmarkapp.com if either of these are not a valid email address, saving bandwitdh.
-    
-    Setting 'strip_html' to TRUE will simply remove all HTML tags from the non-HTML message that gets sent to your recipient. Some wild and crazy
-    formatting things will happen if you set this to TRUE, but the email will send, and not fail.
-    
-    Setting 'develop' to TRUE will use the generic POSTMARK_API_TEST token to make sure that your configuration is correct. And email will _*not*_
-    be sent.
-	
-	You can also pass an array of config options to the initialize(); function. 
+There are six options that you can set in the config file (application/config/postmark.php)
+Only api-key is required, which you get from your server instance on postmarkapp.com
+
+The other five are optional. You can set a default 'From Name' and 'From Address'. This are setup in your postmarkapp.com sender signatures.
+
+Setting 'validation' to TRUE will require that the to and from email addresses are, indeed, valid emails. A request will not be sent to 
+postmarkapp.com if either of these are not a valid email address, saving bandwitdh.
+
+Setting 'strip_html' to TRUE will simply remove all HTML tags from the non-HTML message that gets sent to your recipient. Some wild and crazy
+formatting things will happen if you set this to TRUE, but the email will send, and not fail.
+
+Setting 'develop' to TRUE will use the generic POSTMARK_API_TEST token to make sure that your configuration is correct. And email will _*not*_
+be sent.
+
+You can also pass an array of config options to the initialize(); function. 
 	
 	$config['api_key'] = '1234';
 	$config['from_address'] = '1f@gogle.com';
@@ -42,7 +42,7 @@ Config
 	
 	$this->postmark->initialize($config);
 
-Sending
+### Sending
 
     $this->load->library('postmark');
 	// option, you can set these in config/postmark.php
