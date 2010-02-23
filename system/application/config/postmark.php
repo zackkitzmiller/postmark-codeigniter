@@ -11,7 +11,7 @@
 | next to the desiered server, then clicking 'Settings & API Credentials'
 |
 */
-$config['api_key'] = '';
+$config['api_key'] = '9703aa94-edbe-4f78-aad7-9050ba464a77';
 
 /*
 |--------------------------------------------------------------------------
@@ -26,8 +26,8 @@ $config['api_key'] = '';
 |
 | Configure your Sender Signatures at http://postmarkapp.com/signatures
 */
-$config['from_name'] = '';
-$config['from_address'] = '';
+$config['from_name'] = 'AMPC Notification System';
+$config['from_address'] = 'notifications@ampc.org';
 
 /*
 |--------------------------------------------------------------------------
@@ -55,4 +55,17 @@ $config['validation'] = TRUE;
 | Experimental Feature
 | 
 */
-$config['strip_html'] = FALSE;
+$config['strip_html'] = TRUE;
+
+/*
+|--------------------------------------------------------------------------
+| DEVELOP
+|--------------------------------------------------------------------------
+|
+| Often when implementing your client library or when integrating an 
+| existing library into your application you would want to send “test” 
+| emails that don’t actually get delivered to the recipient. You just need 
+| to know if your data is valid. You can do that by setting this to TRUE
+| 
+*/
+$config['develop'] = FALSE;

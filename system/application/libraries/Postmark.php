@@ -18,6 +18,7 @@ class Postmark {
     var $api_key = '';
     var $validation = FALSE;
     var $strip_html = FALSE;
+    var $develop = FALSE;
     
     var $from_name;
     var $from_address;
@@ -42,6 +43,11 @@ class Postmark {
         {
             $this->initialize($params);
         }
+    	
+    	if ($this->develop == TRUE)
+    	{
+    	   $this->api_key = 'POSTMARK_API_TEST';
+    	}
     	
         log_message('debug', 'Postmark Class Initialized');
     
@@ -279,6 +285,7 @@ class Postmark {
 		}
 		
 		$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		log_message('info', 'http code:' . $httpCode);
 		
 		if (intval($httpCode / 100) != 2) {
 			$message = json_decode($return)->Message;
