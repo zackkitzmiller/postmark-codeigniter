@@ -8,8 +8,8 @@ I spent a bit of time making this library resemble the internal CodeIgniter libr
 Installation
 ------------
 
-Copy system/application/config/postmark.php to your application/config folder
-Copy system/application/libraries/Postmark.php to your application/libraries folder
+1.  Copy system/application/config/postmark.php to your application/config folder
+2.  Copy system/application/libraries/Postmark.php to your application/libraries folder
 
 Usage
 ------
