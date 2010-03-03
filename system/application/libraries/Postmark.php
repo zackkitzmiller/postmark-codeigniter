@@ -278,14 +278,14 @@ class Postmark {
 		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 		
 		$return = curl_exec($ch);
-		log_message('debug', 'JSON: ' . $encoded_data . "\nHeaders: \n\t" . implode("\n\t", $headers) . "\nReturn:\n$return");
+		log_message('debug', 'POSTMARK JSON: ' . $encoded_data . "\nHeaders: \n\t" . implode("\n\t", $headers) . "\nReturn:\n$return");
 		
 		if (curl_error($ch) != '') {
 			show_error(curl_error($ch));
 		}
 		
 		$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-		log_message('info', 'http code:' . $httpCode);
+		log_message('debug', 'POSTMARK http code:' . $httpCode);
 		
 		if (intval($httpCode / 100) != 2) {
 			$message = json_decode($return)->Message;
