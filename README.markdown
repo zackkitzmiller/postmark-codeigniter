@@ -48,13 +48,19 @@ You can also pass an array of config options to the initialize(); function.
 	// option, you can set these in config/postmark.php
     $this->postmark->from('from@example.com', 'From Name');
 
-    $this->postmark->to('to@example.com', 'To Name);
+    $this->postmark->to('to@example.com', 'To Name');
+    
+    $this->postmark->cc('cc@example.com', 'Cc Name');
+
     $this->postmark->subject('Example subject');
     $this->postmark->message_plain('Testing...');
     $this->postmark->message_html('<html><strong>Testing...</strong></html>');
     $this->postmark->send();
 	
 If using this in a loop, calling $this->postmark->to('to'); again will *replace* the original recipient, and calling $this->postmark->clear(); will set all fields to null. 
+Postmark has now added the ability to send to multiple recipients. This is done by passing a comma seperated string to $this->postmark->to();
+
+$this->postmark->to('ex1@g.com, ex3@g.com');
 
 Extra
 -----
