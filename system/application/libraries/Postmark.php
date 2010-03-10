@@ -25,6 +25,10 @@ class Postmark {
     
     var $_to_name;
     var $_to_address;
+    
+    var $_cc_name;
+    var $_cc_address;
+    
     var $_subject;
     var $_message_plain;
     var $_message_html;
@@ -163,7 +167,39 @@ class Postmark {
             }
 		}
 	}
-	
+	// --------------------------------------------------------------------
+
+	/**
+	 * Set Email CC address
+	 *
+	 * TODO:
+	 * Validate Email Addresses ala CodeIgniter's Email Class
+	 *
+	 * @access	public
+	 * @return	void
+	 */	
+	function cc($address, $name = null)
+	{
+	        
+		if ( ! $this->validation == TRUE)
+		{
+            $this->_cc_address = $address;
+            $this->_cc_name = $name;
+		} 
+		else
+        {
+            if ($this->_validate_email($address))
+            {
+                $this->_cc_address = $address;
+                $this->_cc_name = $name;
+            }
+            else
+            {
+                show_error('You have entered an invalid recipient address.');
+            }
+		}
+	}
+		
 	// --------------------------------------------------------------------
 
 	/**
@@ -222,6 +258,11 @@ class Postmark {
 		$data['From'] = is_null($this->from_name) ? $this->from_address : "{$this->from_name} <{$this->from_address}>";
 		$data['To'] = is_null($this->_to_name) ? $this->_to_address : "{$this->_to_name} <{$this->_to_address}>";
 		
+		if (!is_null($this->_cc_address)) {
+            $data['Cc'] = is_null($this->_cc_name) ? $this->_cc_address : "{$this->_cc_name} <{$this->_cc_address}>";
+		}
+		
+		
 		if (!is_null($this->_message_html)) {
 			$data['HtmlBody'] = $this->_message_html;
 		}
@@ -235,6 +276,18 @@ class Postmark {
 	
     function send($from_address = null, $from_name = null, $to_address = null, $to_name = null, $subject = null, $message_plain = null, $message_html = null)
 	{
+	
+        if (!function_exists('curl_init'))
+        {
+            
+            if(function_exists('log_message'))
+            {
+                log_message('error', 'Postmark - PHP was not built with cURL enabled. Rebuild PHP with --with-curl to use cURL.');            
+            }
+            
+            return false;    
+            
+        }
 	
 		if (!is_null($from_address)) $this->from($from_address, $from_name);
 		if (!is_null($to_address)) $this->to($to_address, $to_name);
@@ -304,7 +357,15 @@ class Postmark {
 	 */
 	function _validate_email($address)
 	{
-		return ( ! preg_match("/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix", $address)) ? FALSE : TRUE;
+		$addresses = explode(',', $address);
+				
+		foreach($addresses as $k => $v) {
+            if ( ! preg_match("/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix", trim($v))) {
+                return FALSE;
+            }
+		}
+		
+        return TRUE;
 	}
 
 	// --------------------------------------------------------------------
