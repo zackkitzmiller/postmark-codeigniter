@@ -33,6 +33,8 @@ class Postmark {
     var $_message_plain;
     var $_message_html;
 
+    var $_tag;
+    
     /**
      * Constructor
      *
@@ -90,14 +92,22 @@ class Postmark {
 	 * @return	void
 	 */	
     function clear() {
+    
         $this->from_name = '';
     	$this->from_address = '';
     	
     	$this->_to_name = '';
     	$this->_to_address = '';
+    	
+    	$this->_cc_name = '';
+    	$this->_cc_address = '';
+    	
     	$this->_subject = '';
     	$this->_message_plain = '';
-    	$this->_message_html = '';	
+    	$this->_message_html = '';
+    	
+    	$this->_tag = '';	
+    	
 	}
 	
 	// --------------------------------------------------------------------
@@ -216,6 +226,19 @@ class Postmark {
 	// --------------------------------------------------------------------
 
 	/**
+	 * Set Tag
+	 *
+	 * @access	public
+	 * @return	void
+	 */	
+	function tag($tag)
+	{
+		$this->_tag = $tag;
+	}	
+	
+	// --------------------------------------------------------------------
+
+	/**
 	 * Set Email Message in Plain Text
 	 *
 	 * @access	public
@@ -258,10 +281,13 @@ class Postmark {
 		$data['From'] = is_null($this->from_name) ? $this->from_address : "{$this->from_name} <{$this->from_address}>";
 		$data['To'] = is_null($this->_to_name) ? $this->_to_address : "{$this->_to_name} <{$this->_to_address}>";
 		
-		if (!is_null($this->_cc_address)) {
+		if (!is_null($this->_cc_address) && ($this->_cc_address != '')) {
             $data['Cc'] = is_null($this->_cc_name) ? $this->_cc_address : "{$this->_cc_name} <{$this->_cc_address}>";
 		}
 		
+		if (!is_null($this->_tag) && ($this->_tag != '')) {
+		  $data['tag'] = $this->_tag;
+		}
 		
 		if (!is_null($this->_message_html)) {
 			$data['HtmlBody'] = $this->_message_html;
