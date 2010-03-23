@@ -51,6 +51,9 @@ You can also pass an array of config options to the initialize(); function.
     $this->postmark->to('to@example.com', 'To Name');
     
     $this->postmark->cc('cc@example.com', 'Cc Name');
+    
+    // optional
+    $this->postmark->tag('Some Tag');
 
     $this->postmark->subject('Example subject');
     $this->postmark->message_plain('Testing...');
