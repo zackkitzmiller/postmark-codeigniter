@@ -23,6 +23,9 @@ class Postmark {
     var $from_name;
     var $from_address;
     
+    var $_reply_to_name;
+    var $_reply_to_address;
+    
     var $_to_name;
     var $_to_address;
     
@@ -177,6 +180,40 @@ class Postmark {
             }
 		}
 	}
+	
+	// --------------------------------------------------------------------
+
+	/**
+	 * Set Email ReplyTo address
+	 *
+	 * TODO:
+	 * Validate Email Addresses ala CodeIgniter's Email Class
+	 *
+	 * @access	public
+	 * @return	void
+	 */	
+	function reply_to($address, $name = null)
+	{
+	        
+		if ( ! $this->validation == TRUE)
+		{
+            $this->_reply_to_address = $address;
+            $this->_reply_to_name = $name;
+		} 
+		else
+        {
+            if ($this->_validate_email($address))
+            {
+                $this->_reply_to_address = $address;
+                $this->_reply_to_name = $name;
+            }
+            else
+            {
+                show_error('You have entered an invalid reply to address.');
+            }
+		}
+	}
+
 	// --------------------------------------------------------------------
 
 	/**
@@ -283,6 +320,10 @@ class Postmark {
 		
 		if (!is_null($this->_cc_address) && ($this->_cc_address != '')) {
             $data['Cc'] = is_null($this->_cc_name) ? $this->_cc_address : "{$this->_cc_name} <{$this->_cc_address}>";
+		}
+
+		if (!is_null($this->_reply_to_address) && ($this->_reply_to_address != '')) {
+            $data['ReplyTo'] = is_null($this->_reply_to_name) ? $this->_reply_to_address : "{$this->_reply_to_name} <{$this->_reply_to_address}>";
 		}
 		
 		if (!is_null($this->_tag) && ($this->_tag != '')) {
