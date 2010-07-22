@@ -1,8 +1,6 @@
 CodeIgniter-Postmark
 =========================
 
-This Library is based heavily on János Rusiczki's (http://www.rusiczki.net) CodeIgniter Postmark Library, which is based on Based on Markus Hedlund's Postmark class for PHP. 
-
 I spent a bit of time making this library resemble the internal CodeIgniter libraries a little more.
 
 Installation
@@ -52,6 +50,8 @@ You can also pass an array of config options to the initialize(); function.
     
     $this->postmark->cc('cc@example.com', 'Cc Name');
     
+	$this->postmark->reply_to('us@us.com', 'Reply To');
+
     // optional
     $this->postmark->tag('Some Tag');
 
@@ -61,9 +61,13 @@ You can also pass an array of config options to the initialize(); function.
     $this->postmark->send();
 	
 If using this in a loop, calling $this->postmark->to('to'); again will *replace* the original recipient, and calling $this->postmark->clear(); will set all fields to null. 
-Postmark has now added the ability to send to multiple recipients. This is done by passing a comma seperated string to $this->postmark->to();
+Postmark has now added the ability to send to multiple recipients. This is done by passing a comma separated string to $this->postmark->to();
 
 $this->postmark->to('ex1@g.com, ex3@g.com');
+
+ChangeLog
+---------
+1.3 - Added support for ReplyTo
 
 Extra
 -----
