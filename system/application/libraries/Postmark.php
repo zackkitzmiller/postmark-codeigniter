@@ -38,6 +38,8 @@ class Postmark {
 
     var $_tag;
     
+    var $_attachments = array();
+    
     /**
      * Constructor
      *
@@ -109,7 +111,9 @@ class Postmark {
     	$this->_message_plain = '';
     	$this->_message_html = '';
     	
-    	$this->_tag = '';	
+    	$this->_tag = '';
+    	
+    	$this->_attachments = array();
     	
 	}
 	
@@ -305,7 +309,37 @@ class Postmark {
 	{
 		$this->_message_html = $message;
 	}
+	
+	// --------------------------------------------------------------------
 
+	/**
+	 * Add an attachment
+	 *
+	 * @access	public
+	 * @return	void
+	 */	
+	function attach($file, $filename = FALSE)
+	{
+		$filesize = filesize($file) + 1;
+		if ( ! $fp = fopen($file, FOPEN_READ))
+		{
+			return FALSE;
+		}
+		
+		$content = chunk_split(base64_encode(fread($fp, $filesize)));
+		fclose($fp);
+		
+		if(!$filename) $filename = end(explode('/', $file));
+		
+		$this->_attachments[] = array(
+			'Name' => $filename,
+			'Content' => $content,
+			'ContentType' => $this->_mime_types(end(explode('.', basename($filename))))
+		);
+		
+		return TRUE;
+	}
+	
 	// --------------------------------------------------------------------
     /**
     * Private Function to prepare and send email
@@ -336,6 +370,10 @@ class Postmark {
 		
 		if (!is_null($this->_message_plain)) {
 			$data['TextBody'] = $this->_message_plain;
+		}
+		
+		if(count($this->_attachments) > 0) {
+			$data['Attachments'] = $this->_attachments;
 		}
 		
 		return $data;
@@ -449,4 +487,107 @@ class Postmark {
         $message =  preg_replace('/\<br(\s*)?\/?\>/i', "\n", $message);
         return strip_tags($message);
 	}	
+	
+	// --------------------------------------------------------------------
+
+	/**
+	 * Mime Types
+	 *
+	 * @access	private
+	 * @param	string
+	 * @return	string
+	 */
+	function _mime_types($ext = "")
+	{
+		$mimes = array(	'hqx'	=>	'application/mac-binhex40',
+						'cpt'	=>	'application/mac-compactpro',
+						'doc'	=>	'application/msword',
+						'bin'	=>	'application/macbinary',
+						'dms'	=>	'application/octet-stream',
+						'lha'	=>	'application/octet-stream',
+						'lzh'	=>	'application/octet-stream',
+						'exe'	=>	'application/octet-stream',
+						'class'	=>	'application/octet-stream',
+						'psd'	=>	'application/octet-stream',
+						'so'	=>	'application/octet-stream',
+						'sea'	=>	'application/octet-stream',
+						'dll'	=>	'application/octet-stream',
+						'oda'	=>	'application/oda',
+						'pdf'	=>	'application/pdf',
+						'ai'	=>	'application/postscript',
+						'eps'	=>	'application/postscript',
+						'ps'	=>	'application/postscript',
+						'smi'	=>	'application/smil',
+						'smil'	=>	'application/smil',
+						'mif'	=>	'application/vnd.mif',
+						'xls'	=>	'application/vnd.ms-excel',
+						'ppt'	=>	'application/vnd.ms-powerpoint',
+						'wbxml'	=>	'application/vnd.wap.wbxml',
+						'wmlc'	=>	'application/vnd.wap.wmlc',
+						'dcr'	=>	'application/x-director',
+						'dir'	=>	'application/x-director',
+						'dxr'	=>	'application/x-director',
+						'dvi'	=>	'application/x-dvi',
+						'gtar'	=>	'application/x-gtar',
+						'php'	=>	'application/x-httpd-php',
+						'php4'	=>	'application/x-httpd-php',
+						'php3'	=>	'application/x-httpd-php',
+						'phtml'	=>	'application/x-httpd-php',
+						'phps'	=>	'application/x-httpd-php-source',
+						'js'	=>	'application/x-javascript',
+						'swf'	=>	'application/x-shockwave-flash',
+						'sit'	=>	'application/x-stuffit',
+						'tar'	=>	'application/x-tar',
+						'tgz'	=>	'application/x-tar',
+						'xhtml'	=>	'application/xhtml+xml',
+						'xht'	=>	'application/xhtml+xml',
+						'zip'	=>	'application/zip',
+						'mid'	=>	'audio/midi',
+						'midi'	=>	'audio/midi',
+						'mpga'	=>	'audio/mpeg',
+						'mp2'	=>	'audio/mpeg',
+						'mp3'	=>	'audio/mpeg',
+						'aif'	=>	'audio/x-aiff',
+						'aiff'	=>	'audio/x-aiff',
+						'aifc'	=>	'audio/x-aiff',
+						'ram'	=>	'audio/x-pn-realaudio',
+						'rm'	=>	'audio/x-pn-realaudio',
+						'rpm'	=>	'audio/x-pn-realaudio-plugin',
+						'ra'	=>	'audio/x-realaudio',
+						'rv'	=>	'video/vnd.rn-realvideo',
+						'wav'	=>	'audio/x-wav',
+						'bmp'	=>	'image/bmp',
+						'gif'	=>	'image/gif',
+						'jpeg'	=>	'image/jpeg',
+						'jpg'	=>	'image/jpeg',
+						'jpe'	=>	'image/jpeg',
+						'png'	=>	'image/png',
+						'tiff'	=>	'image/tiff',
+						'tif'	=>	'image/tiff',
+						'css'	=>	'text/css',
+						'html'	=>	'text/html',
+						'htm'	=>	'text/html',
+						'shtml'	=>	'text/html',
+						'txt'	=>	'text/plain',
+						'text'	=>	'text/plain',
+						'log'	=>	'text/plain',
+						'rtx'	=>	'text/richtext',
+						'rtf'	=>	'text/rtf',
+						'xml'	=>	'text/xml',
+						'xsl'	=>	'text/xml',
+						'mpeg'	=>	'video/mpeg',
+						'mpg'	=>	'video/mpeg',
+						'mpe'	=>	'video/mpeg',
+						'qt'	=>	'video/quicktime',
+						'mov'	=>	'video/quicktime',
+						'avi'	=>	'video/x-msvideo',
+						'movie'	=>	'video/x-sgi-movie',
+						'doc'	=>	'application/msword',
+						'word'	=>	'application/msword',
+						'xl'	=>	'application/excel',
+						'eml'	=>	'message/rfc822'
+					);
+
+		return ( ! isset($mimes[strtolower($ext)])) ? "application/x-unknown-content-type" : $mimes[strtolower($ext)];
+	}
 }
