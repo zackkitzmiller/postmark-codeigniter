@@ -14,31 +14,31 @@
 class Postmark {
 
     //private
-    var $CI;
-    var $api_key = '';
-    var $validation = FALSE;
-    var $strip_html = FALSE;
-    var $develop = FALSE;
+    private $CI;
+    private $api_key = '';
+    private $validation = false;
+    private $strip_html = false;
+    private $develop = false;
     
-    var $from_name;
-    var $from_address;
+    private $from_name;
+    private $from_address;
     
-    var $_reply_to_name;
-    var $_reply_to_address;
+    private $_reply_to_name;
+    private $_reply_to_address;
     
-    var $_to_name;
-    var $_to_address;
+    private $_to_name;
+    private $_to_address;
     
-    var $_cc_name;
-    var $_cc_address;
+    private $_cc_name;
+    private $_cc_address;
     
-    var $_subject;
-    var $_message_plain;
-    var $_message_html;
+    private $_subject;
+    private $_message_plain;
+    private $_message_html;
 
-    var $_tag;
+    private $_tag;
     
-    var $_attachments = array();
+    private $_attachments = array();
     
     /**
      * Constructor
@@ -46,7 +46,7 @@ class Postmark {
      * @access	public
      * @param	array	initialization parameters
      */	
-    function Postmark($params = array())
+    public function __construct($params = array())
     {
         $this->CI =& get_instance();
         
@@ -55,7 +55,7 @@ class Postmark {
             $this->initialize($params);
         }
     	
-    	if ($this->develop == TRUE)
+    	if ($this->develop == true)
     	{
     	   $this->api_key = 'POSTMARK_API_TEST';
     	}
@@ -73,7 +73,7 @@ class Postmark {
 	 * @param	array	initialization parameters
 	 * @return	void
 	 */	
-    function initialize($params)
+    public function initialize($params)
 	{
         $this->clear();
 		if (count($params) > 0)
@@ -96,8 +96,8 @@ class Postmark {
 	 * @access	public
 	 * @return	void
 	 */	
-    function clear() {
-    
+    public function function clear()
+	{
         $this->from_name = '';
     	$this->from_address = '';
     	
@@ -114,7 +114,6 @@ class Postmark {
     	$this->_tag = '';
     	
     	$this->_attachments = array();
-    	
 	}
 	
 	// --------------------------------------------------------------------
@@ -130,10 +129,10 @@ class Postmark {
 	 * @access	public
 	 * @return	void
 	 */	
-	function from($address, $name = null)
+	public function from($address, $name = null)
 	{
 		
-		if ( ! $this->validation == TRUE)
+		if ( ! $this->validation == true)
 		{
             $this->from_address = $address;
             $this->from_name = $name;
@@ -163,10 +162,10 @@ class Postmark {
 	 * @access	public
 	 * @return	void
 	 */	
-	function to($address, $name = null)
+	public function to($address, $name = null)
 	{
 	        
-		if ( ! $this->validation == TRUE)
+		if ( ! $this->validation == true)
 		{
             $this->_to_address = $address;
             $this->_to_name = $name;
@@ -196,10 +195,9 @@ class Postmark {
 	 * @access	public
 	 * @return	void
 	 */	
-	function reply_to($address, $name = null)
+	public function reply_to($address, $name = null)
 	{
-	        
-		if ( ! $this->validation == TRUE)
+		if ( ! $this->validation == true)
 		{
             $this->_reply_to_address = $address;
             $this->_reply_to_name = $name;
@@ -229,10 +227,10 @@ class Postmark {
 	 * @access	public
 	 * @return	void
 	 */	
-	function cc($address, $name = null)
+	public function cc($address, $name = null)
 	{
 	        
-		if ( ! $this->validation == TRUE)
+		if ( ! $this->validation == true)
 		{
             $this->_cc_address = $address;
             $this->_cc_name = $name;
@@ -259,7 +257,7 @@ class Postmark {
 	 * @access	public
 	 * @return	void
 	 */	
-	function subject($subject)
+	public function subject($subject)
 	{
 		$this->_subject = $subject;
 	}
@@ -272,7 +270,7 @@ class Postmark {
 	 * @access	public
 	 * @return	void
 	 */	
-	function tag($tag)
+	public function tag($tag)
 	{
 		$this->_tag = $tag;
 	}	
@@ -285,7 +283,7 @@ class Postmark {
 	 * @access	public
 	 * @return	void
 	 */	
-	function message_plain($message)
+	public function message_plain($message)
 	{
 		if ( ! $this->strip_html )
 		{
@@ -305,7 +303,7 @@ class Postmark {
 	 * @access	public
 	 * @return	void
 	 */	
-	function message_html($message)
+	public function message_html($message)
 	{
 		$this->_message_html = $message;
 	}
@@ -316,14 +314,15 @@ class Postmark {
 	 * Add an attachment
 	 *
 	 * @access	public
-	 * @return	void
+	 * @return	bool
+	 * @author  Adam Jackett
 	 */	
-	function attach($file, $filename = FALSE)
+	public function attach($file, $filename = false)
 	{
 		$filesize = filesize($file) + 1;
 		if ( ! $fp = fopen($file, FOPEN_READ))
 		{
-			return FALSE;
+			return false;
 		}
 		
 		$content = chunk_split(base64_encode(fread($fp, $filesize)));
@@ -337,14 +336,17 @@ class Postmark {
 			'ContentType' => $this->_mime_types(end(explode('.', basename($filename))))
 		);
 		
-		return TRUE;
+		return true;
 	}
 	
 	// --------------------------------------------------------------------
     /**
     * Private Function to prepare and send email
+	* 
+	* @access private
+	* @return mixed
     */
-	function _prepare_data()
+	private function _prepare_data()
 	{
         $data = array();
 		$data['Subject'] = $this->_subject;
@@ -356,67 +358,68 @@ class Postmark {
             $data['Cc'] = is_null($this->_cc_name) ? $this->_cc_address : "{$this->_cc_name} <{$this->_cc_address}>";
 		}
 
-		if (!is_null($this->_reply_to_address) && ($this->_reply_to_address != '')) {
+		if (!is_null($this->_reply_to_address) && ($this->_reply_to_address != ''))
+		{
             $data['ReplyTo'] = is_null($this->_reply_to_name) ? $this->_reply_to_address : "{$this->_reply_to_name} <{$this->_reply_to_address}>";
 		}
 		
-		if (!is_null($this->_tag) && ($this->_tag != '')) {
+		if (!is_null($this->_tag) && ($this->_tag != ''))
+		{
 		  $data['tag'] = $this->_tag;
 		}
 		
-		if (!is_null($this->_message_html)) {
+		if (!is_null($this->_message_html))
+		{
 			$data['HtmlBody'] = $this->_message_html;
 		}
 		
-		if (!is_null($this->_message_plain)) {
+		if (!is_null($this->_message_plain))
+		{
 			$data['TextBody'] = $this->_message_plain;
 		}
 		
-		if(count($this->_attachments) > 0) {
+		if(count($this->_attachments) > 0)
+		{
 			$data['Attachments'] = $this->_attachments;
 		}
 		
 		return $data;
 	}
 	
-    function send($from_address = null, $from_name = null, $to_address = null, $to_name = null, $subject = null, $message_plain = null, $message_html = null)
+    public function send()
 	{
-	
         if (!function_exists('curl_init'))
         {
-            
             if(function_exists('log_message'))
             {
                 log_message('error', 'Postmark - PHP was not built with cURL enabled. Rebuild PHP with --with-curl to use cURL.');            
             }
             
-            return false;    
-            
+            return false;                
         }
 	
-		if (!is_null($from_address)) $this->from($from_address, $from_name);
-		if (!is_null($to_address)) $this->to($to_address, $to_name);
-		if (!is_null($subject)) $this->subject($subject);
-		if (!is_null($message_plain)) $this->message_plain($message_plain);
-		if (!is_null($message_html)) $this->message_html($message_html);
-	
-		if (is_null($this->api_key)) {
+		if (is_null($this->api_key))
+		{
 			show_error("Postmark API key is not set!");
 		}
 		
-		if (is_null($this->from_address)) {
+		if (is_null($this->from_address))
+		{
 			show_error("From address is not set!");
 		}
 		
-		if (is_null($this->_to_address)) {
+		if (is_null($this->_to_address)) 
+		{
 			show_error("To address is not set!");
 		}
 		
-		if (is_null($this->_subject)) {
+		if (is_null($this->_subject))
+		{
 			show_error("Subject is not set!");
 		}
 		
-		if (is_null($this->_message_plain) && is_null($this->_message_html)) {
+		if (is_null($this->_message_plain) && is_null($this->_message_html))
+		{
 			show_error("Please either set plain message, HTML message or both!");
 		}
 	
@@ -438,14 +441,16 @@ class Postmark {
 		$return = curl_exec($ch);
 		log_message('debug', 'POSTMARK JSON: ' . $encoded_data . "\nHeaders: \n\t" . implode("\n\t", $headers) . "\nReturn:\n$return");
 		
-		if (curl_error($ch) != '') {
+		if (curl_error($ch) != '')
+		{
 			show_error(curl_error($ch));
 		}
 		
 		$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
 		log_message('debug', 'POSTMARK http code:' . $httpCode);
 		
-		if (intval($httpCode / 100) != 2) {
+		if (intval($httpCode / 100) != 2)
+		{
 			$message = json_decode($return)->Message;
 			show_error('Error while mailing. Postmark returned HTTP code ' . $httpCode . ' with message "'.$message.'"');
 		}
@@ -456,21 +461,22 @@ class Postmark {
 	/**
 	 * Email Validation
 	 *
-	 * @access	public
+	 * @access	private
 	 * @param	string
 	 * @return	bool
 	 */
-	function _validate_email($address)
+	private function _validate_email($address)
 	{
 		$addresses = explode(',', $address);
 				
 		foreach($addresses as $k => $v) {
-            if ( ! preg_match("/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix", trim($v))) {
-                return FALSE;
+            if ( ! preg_match("/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix", trim($v)))
+			{
+                return false;
             }
 		}
 		
-        return TRUE;
+        return true;
 	}
 
 	// --------------------------------------------------------------------
@@ -478,11 +484,11 @@ class Postmark {
 	/**
 	 * Strip Html
 	 *
-	 * @access	public
+	 * @access	private
 	 * @param	string
 	 * @return	string
 	 */	
-	function _strip_html($message)
+	private function _strip_html($message)
 	{
         $message =  preg_replace('/\<br(\s*)?\/?\>/i', "\n", $message);
         return strip_tags($message);
@@ -497,7 +503,7 @@ class Postmark {
 	 * @param	string
 	 * @return	string
 	 */
-	function _mime_types($ext = "")
+	private function _mime_types($ext = "")
 	{
 		$mimes = array(	'hqx'	=>	'application/mac-binhex40',
 						'cpt'	=>	'application/mac-compactpro',
