@@ -32,6 +32,8 @@ class Postmark {
     var $_cc_name;
     var $_cc_address;
     
+    var $_bcc_address;
+    
     var $_subject;
     var $_message_plain;
     var $_message_html;
@@ -250,6 +252,38 @@ class Postmark {
             }
 		}
 	}
+	
+	// --------------------------------------------------------------------
+
+	/**
+	 * Set Email BCC address
+	 *
+	 * TODO:
+	 * Validate Email Addresses ala CodeIgniter's Email Class
+	 *
+	 * @access	public
+	 * @return	void
+	 * @author	Adam Jackett, based on cc method
+	 */	
+	function bcc($address)
+	{
+		
+		if ( ! $this->validation == TRUE)
+		{
+			$this->_bcc_address = $address;
+		} 
+		else
+		{
+			if ($this->_validate_email($address))
+			{
+				$this->_bcc_address = $address;
+			}
+			else
+			{
+				show_error('You have entered an invalid recipient address.');
+			}
+		}
+	}
 		
 	// --------------------------------------------------------------------
 
@@ -354,6 +388,10 @@ class Postmark {
 		
 		if (!is_null($this->_cc_address) && ($this->_cc_address != '')) {
             $data['Cc'] = is_null($this->_cc_name) ? $this->_cc_address : "{$this->_cc_name} <{$this->_cc_address}>";
+		}
+		
+		if (!is_null($this->_bcc_address) && ($this->_bcc_address != '')) {
+            $data['Bcc'] = $this->_bcc_address;
 		}
 
 		if (!is_null($this->_reply_to_address) && ($this->_reply_to_address != '')) {
