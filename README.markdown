@@ -49,7 +49,7 @@ You can also pass an array of config options to the initialize(); function.
     $this->postmark->to('to@example.com', 'To Name');
     
     $this->postmark->cc('cc@example.com', 'Cc Name');
-    
+    $this->postmark->bcc('bcc@example.com', 'BCC Name');
 	$this->postmark->reply_to('us@us.com', 'Reply To');
 
     // optional
@@ -73,8 +73,9 @@ $this->postmark->to('ex1@g.com, ex3@g.com');
 
 ChangeLog
 ---------
-1.3 - Added support for ReplyTo
-1.4 - Attachments
+* 1.3 - Added support for ReplyTo
+* 1.4 - Attachments
+* 1.5 - Added support for BCC
 
 Extra
 -----
