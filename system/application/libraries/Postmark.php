@@ -51,6 +51,9 @@ class Postmark {
     function Postmark($params = array())
     {
         $this->CI =& get_instance();
+        $this->CI->config->load('postmark', TRUE);
+		
+        $params = array_merge($this->CI->config->config['postmark'], $params);
         
         if (count($params) > 0)
         {
