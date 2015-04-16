@@ -417,7 +417,7 @@ class Postmark {
         return $data;
     }
     
-    function send($from_address = null, $from_name = null, $to_address = null, $to_name = null, $subject = null, $message_plain = null, $message_html = null)
+    function send($from_address = null, $from_name = null, $to_address = null, $to_name = null, $subject = null, $message_plain = null, $message_html = null, $display_unprocessable_messages = FALSE)
     {
     
         if (!function_exists('curl_init'))
@@ -483,7 +483,7 @@ class Postmark {
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         log_message('debug', 'POSTMARK http code:' . $httpCode);
         
-        if (intval($httpCode / 100) != 2) {
+        if ((intval($httpCode / 100) != 2) AND $display_unprocessable_messages) {
             $message = json_decode($return)->Message;
             show_error('Error while mailing. Postmark returned HTTP code ' . $httpCode . ' with message "'.$message.'"');
         }
