@@ -500,14 +500,28 @@ class Postmark {
      */
     function _validate_email($address)
     {
+
+        /*
+
+        http://en.wikipedia.org/wiki/Email_address#Syntax
+
+        The local-part of the email address may use any of these ASCII characters:
+
+        * Uppercase and lowercase English letters (a–z, A–Z)
+        * Digits 0 to 9
+        * Characters ! # $ % & ' * + - / = ? ^ _ ` { | } ~
+        * Character . (dot, period, full stop) provided that it is not the first or last character, and provided also that it does not appear two or more times consecutively (e.g. John..Doe@example.com).
+
+        */
+
         $addresses = explode(',', $address);
-                
+
         foreach($addresses as $k => $v) {
-            if ( ! preg_match("/^([a-z0-9\+_\-]+)(\.[a-z0-9\+_\-]+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix", trim($v))) {
+            if ( ! preg_match("/^([a-z0-9\+_\-']+)(\.[a-z0-9\+_\-']+)*@([a-z0-9\-]+\.)+[a-z]{2,6}$/ix", trim($v))) {
                 return FALSE;
             }
         }
-        
+
         return TRUE;
     }
 
