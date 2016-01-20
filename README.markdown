@@ -59,11 +59,14 @@ You can also pass an array of config options to the initialize(); function.
     $this->postmark->message_plain('Testing...');
     $this->postmark->message_html('<html><strong>Testing...</strong></html>');
 
-	// add attachments (optional)
-	$this->postmark->attach(PATH TO FILE);
-	$this->postmark->attach(PATH TO OTHER FILE);
+    // add attachments (optional)
+    $this->postmark->attach(PATH TO FILE);
+    $this->postmark->attach(PATH TO OTHER FILE);
 	
-	// send the email
+    // add headers (optional)
+    $this->postmark->header('Name', 'Value');
+
+    // send the email
     $this->postmark->send();
 	
 If using this in a loop, calling $this->postmark->to('to'); again will *replace* the original recipient, and calling $this->postmark->clear(); will set all fields to null. 
@@ -76,6 +79,7 @@ ChangeLog
 * 1.3 - Added support for ReplyTo
 * 1.4 - Attachments
 * 1.5 - Added support for BCC
+* 1.6 - Added support for Headers
 
 License
 -------
