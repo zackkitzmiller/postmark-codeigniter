@@ -19,6 +19,7 @@ class Postmark {
     var $validation = FALSE;
     var $strip_html = FALSE;
     var $develop = FALSE;
+    var $display_unprocessable_messages = FALSE;
 
     var $from_name;
     var $from_address;
@@ -121,6 +122,19 @@ class Postmark {
 
         $this->_attachments = array();
 
+    }
+
+    // --------------------------------------------------------------------
+
+    /**
+     * Set Display Unprocessable Messages
+     *
+     * @access  public
+     * @return  void
+     */
+    function display_unprocessable_messages($display_unprocessable_messages)
+    {
+        $this->display_unprocessable_messages = $display_unprocessable_messages;
     }
 
     // --------------------------------------------------------------------
@@ -351,7 +365,7 @@ class Postmark {
     // --------------------------------------------------------------------
 
     /**
-     * Add custom extension header (Adds the X- prefix indicating an "extension" header)
+     * Add custom extension headers (Adds the X- prefix indicating an "extension" header)
      *
      * @access  public
      * @return  void
@@ -444,7 +458,7 @@ class Postmark {
         return $data;
     }
 
-    function send($from_address = null, $from_name = null, $to_address = null, $to_name = null, $subject = null, $message_plain = null, $message_html = null, $display_unprocessable_messages = FALSE)
+    function send($from_address = null, $from_name = null, $to_address = null, $to_name = null, $subject = null, $message_plain = null, $message_html = null, $display_unprocessable_messages = null)
     {
 
         if (!function_exists('curl_init'))
@@ -464,6 +478,7 @@ class Postmark {
         if (!is_null($subject)) $this->subject($subject);
         if (!is_null($message_plain)) $this->message_plain($message_plain);
         if (!is_null($message_html)) $this->message_html($message_html);
+        if (!is_null($display_unprocessable_messages)) $this->display_unprocessable_messages($display_unprocessable_messages);
 
         if (is_null($this->api_key)) {
             show_error("Postmark API key is not set!");
@@ -510,7 +525,7 @@ class Postmark {
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         log_message('debug', 'POSTMARK http code:' . $httpCode);
 
-        if ((intval($httpCode / 100) != 2) AND $display_unprocessable_messages) {
+        if ((intval($httpCode / 100) != 2) AND $this->display_unprocessable_messages) {
             $message = json_decode($return)->Message;
             show_error('Error while mailing. Postmark returned HTTP code ' . $httpCode . ' with message "'.$message.'"');
         }
