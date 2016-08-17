@@ -152,7 +152,10 @@ class Postmark {
      */
     function from($address, $name = null)
     {
-
+        
+        // Sanitise the name somewhat
+        $name = str_replace(',', '', $name);
+        
         if ( ! $this->validation == TRUE)
         {
             $this->from_address = $address;
