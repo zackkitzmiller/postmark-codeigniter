@@ -550,7 +550,7 @@ class Postmark {
         $addresses = explode(',', $address);
 
         foreach($addresses as $k => $v) {
-            if( is_string($v) || filter_var($v, FILTER_VALIDATE_EMAIL) ) {
+            if( !is_string($v) || !filter_var($v, FILTER_VALIDATE_EMAIL) ) {
                 return FALSE;
             }
         }
