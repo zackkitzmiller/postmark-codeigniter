@@ -406,8 +406,6 @@ class Postmark {
 
         $this->_template_model[$name] = $value;
 
-        log_message('debug', 'postmark template_model_item set');
-
         return TRUE;
     }
 
@@ -423,8 +421,6 @@ class Postmark {
     {
 
         $this->_template_id = $value;
-
-        log_message('debug', 'postmark template_id set');
 
         return TRUE;
     }
