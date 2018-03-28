@@ -41,6 +41,9 @@ class Postmark {
 
     var $_tag;
 
+    var $_template_id;
+    var $_template_model = array();
+
     var $_headers = array();
 
     var $_attachments = array();
@@ -51,7 +54,7 @@ class Postmark {
      * @access  public
      * @param   array   initialization parameters
      */
-    function Postmark($params = array())
+    function __construct($params = array())
     {
         $this->CI =& get_instance();
 
@@ -118,9 +121,13 @@ class Postmark {
 
         $this->_tag = '';
 
+        $this->_template_id = '';
+        $this->_template_model = array();
+
         $this->_headers = array();
 
         $this->_attachments = array();
+
 
     }
 
@@ -152,10 +159,10 @@ class Postmark {
      */
     function from($address, $name = null)
     {
-        
+
         // Sanitise the name somewhat
         $name = str_replace(',', '', $name);
-        
+
         if ( ! $this->validation == TRUE)
         {
             $this->from_address = $address;
@@ -206,6 +213,8 @@ class Postmark {
                 show_error('You have entered an invalid recipient address.');
             }
         }
+
+        log_message('debug', 'postmark recipient set');
     }
 
     // --------------------------------------------------------------------
@@ -387,6 +396,43 @@ class Postmark {
     // --------------------------------------------------------------------
 
     /**
+     * Add Postmark template model item
+     *
+     * @access  public
+     * @return  void
+     */
+    function template_model($name, $value = null)
+    {
+
+        $this->_template_model[$name] = $value;
+
+        log_message('debug', 'postmark template_model_item set');
+
+        return TRUE;
+    }
+
+    // --------------------------------------------------------------------
+
+    /**
+     * Set Postmark template model ID
+     *
+     * @access  public
+     * @return  void
+     */
+    function template_id($value)
+    {
+
+        $this->_template_id = $value;
+
+        log_message('debug', 'postmark template_id set');
+
+        return TRUE;
+    }
+
+    // --------------------------------------------------------------------
+
+
+    /**
      * Add an attachment
      *
      * @access  public
@@ -421,7 +467,6 @@ class Postmark {
     function _prepare_data()
     {
         $data = array();
-        $data['Subject'] = $this->_subject;
 
         $data['From'] = is_null($this->from_name) ? $this->from_address : "{$this->from_name} <{$this->from_address}>";
         $data['To'] = is_null($this->_to_name) ? $this->_to_address : "{$this->_to_name} <{$this->_to_address}>";
@@ -442,12 +487,23 @@ class Postmark {
           $data['tag'] = $this->_tag;
         }
 
-        if (!is_null($this->_message_html)) {
-            $data['HtmlBody'] = $this->_message_html;
-        }
+        if(is_null($this->_template_id)) {
 
-        if (!is_null($this->_message_plain)) {
-            $data['TextBody'] = $this->_message_plain;
+          if (!is_null($this->_message_html)) {
+              $data['HtmlBody'] = $this->_message_html;
+          }
+
+          if (!is_null($this->_message_plain)) {
+              $data['TextBody'] = $this->_message_plain;
+          }
+
+          $data['Subject'] = $this->_subject;
+
+        } else {
+
+          $data['TemplateId'] = $this->_template_id;
+          $data['TemplateModel'] = $this->_template_model;
+
         }
 
         if(count($this->_headers) > 0) {
@@ -505,6 +561,8 @@ class Postmark {
 
         $encoded_data = json_encode($this->_prepare_data());
 
+        log_message('debug', $encoded_data);
+
         $headers = array(
             'Accept: application/json',
             'Content-Type: application/json',
@@ -512,7 +570,11 @@ class Postmark {
         );
 
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'http://api.postmarkapp.com/email');
+        if(is_null($this->_template_id)) {
+          curl_setopt($ch, CURLOPT_URL, 'http://api.postmarkapp.com/email');
+        } else {
+          curl_setopt($ch, CURLOPT_URL, 'http://api.postmarkapp.com/email/withTemplate');
+        }
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'POST');
         curl_setopt($ch, CURLOPT_POSTFIELDS, $encoded_data);
