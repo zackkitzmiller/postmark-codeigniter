@@ -71,8 +71,8 @@ You can also pass an array of config options to the initialize(); function.
 
 ### Sending with the Postmark Templating engine
 
-	If you have configured templates in the postmark templating engine in your account, you can set options here.
-	https://postmarkapp.com/developer/api/templates-api#email-with-template
+If you have configured templates in the postmark templating engine in your account, you can set options here.
+https://postmarkapp.com/developer/api/templates-api#email-with-template
 
 		// Set the template id
 		$this->postmark->template_id(123456);
@@ -83,7 +83,7 @@ You can also pass an array of config options to the initialize(); function.
 		$this->postmark->template_model('key3', 'value3');
 		$this->postmark->template_model('key4', array('one', 'two', 'three'));
 
-	If you set a template_id, any values set for subject, message_plain, or message_html will be completely ignored.
+If you set a template_id, any values set for subject, message_plain, or message_html will be completely ignored.
 
 
 If using this in a loop, calling $this->postmark->to('to'); again will *replace* the original recipient, and calling $this->postmark->clear(); will set all fields to null.
