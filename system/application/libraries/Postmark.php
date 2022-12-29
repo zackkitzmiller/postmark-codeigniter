@@ -538,11 +538,11 @@ class Postmark
         $ch = curl_init();
         if (is_null($this->_template_id))
         {
-            curl_setopt($ch, CURLOPT_URL, 'http://api.postmarkapp.com/email');
+            curl_setopt($ch, CURLOPT_URL, 'https://api.postmarkapp.com/email');
         }
         else
         {
-            curl_setopt($ch, CURLOPT_URL, 'http://api.postmarkapp.com/email/withTemplate');
+            curl_setopt($ch, CURLOPT_URL, 'https://api.postmarkapp.com/email/withTemplate');
         }
 
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
